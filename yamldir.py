@@ -13,7 +13,6 @@ def mkdir_by_path(path_list):
 def create_recursive_directories(directory_description, parent_tree:list):
     if isinstance(directory_description, dict):
         for path_part in directory_description:
-            
             inside_directory = directory_description[path_part]
         
             if isinstance(inside_directory, list):
@@ -27,6 +26,12 @@ def create_recursive_directories(directory_description, parent_tree:list):
                     mkdir_by_path(parent_tree_copy)
 
                     create_recursive_directories(sub_path_part, parent_tree_copy)
+            else:
+                    parent_tree_copy = list(parent_tree)
+                    
+                    parent_tree_copy.append(path_part)
+
+                    mkdir_by_path(parent_tree_copy)
     else:
         parent_tree_copy = list(parent_tree)
         
