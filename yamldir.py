@@ -4,9 +4,13 @@ import sys
 import os
 
 
-def mkdir_by_path(path_list):
+def mkdir_by_path(parent_tree, path_part):
+    parent_tree_copy = list(parent_tree)
+                    
+    parent_tree_copy.append(str(path_part))
+
     try:
-        os.mkdir(os.path.join(".","/".join(path_list)))
+        os.mkdir(os.path.join(".","/".join(parent_tree_copy)))
     except OSError as exc:
         pass
 
@@ -18,26 +22,17 @@ def create_recursive_directories(directory_description, parent_tree:list):
             if isinstance(inside_directory, list):
                 
                 for sub_path_part in inside_directory:
-                    
-                    parent_tree_copy = list(parent_tree)
-                    
-                    parent_tree_copy.append(path_part)
+                    mkdir_by_path(parent_tree, path_part)
 
-                    mkdir_by_path(parent_tree_copy)
+                    new_sub_path = list(parent_tree)
 
-                    create_recursive_directories(sub_path_part, parent_tree_copy)
+                    new_sub_path.append(path_part)
+                    
+                    create_recursive_directories(sub_path_part, new_sub_path)
             else:
-                    parent_tree_copy = list(parent_tree)
-                    
-                    parent_tree_copy.append(path_part)
-
-                    mkdir_by_path(parent_tree_copy)
+                mkdir_by_path(parent_tree, path_part)
     else:
-        parent_tree_copy = list(parent_tree)
-        
-        parent_tree_copy.append(str(directory_description))
-
-        mkdir_by_path(parent_tree_copy)
+        mkdir_by_path(parent_tree, directory_description)
 
 with open(sys.argv[1], 'r') as config_file_stream:
     try:
